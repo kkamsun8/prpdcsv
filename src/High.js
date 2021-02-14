@@ -12,10 +12,13 @@ class High extends Component {
         const options = {
             chart: {
                 type: "heatmap",
-                marginTop: 20,
-                marginBottom: 80,
-                plotBorderWidth: 0,
-                borderWidth: 0
+                // marginTop: 20,
+                // marginBottom: 80,
+                // plotBorderWidth: 0,
+                // borderWidth: 0
+                width: 400,
+                height: 250
+
             },
             credits: {
                 enabled: false
@@ -26,12 +29,20 @@ class High extends Component {
 
             yAxis: {
                 categories: ["None", "Delivery", "Installation", "C&C", "Action"],
-                title: null
+                title: "amp"
             },
 
             colorAxis: {
+                stops: [
+                    [0, '#fafafa'],
+                    [0.01, '#2f2f2f'],
+                    [0.02, '#999999'],
+                    [0.1, '#ff5f59'],
+                    [0.68, '#ff0000'],
+                    [1, '#ffd659'],
+                ],
                 min: 0,
-                max: 100,
+                max: 80,
                 reversed: false
             },
 
@@ -40,43 +51,42 @@ class High extends Component {
                 layout: "vertical",
                 margin: 0,
                 verticalAlign: "top",
-                y: 25,
-                symbolHeight: 280
+                // symbolHeight: 280
             },
 
             plotOptions: {
-                series: {
-                    dataLabels: {
-                        formatter: function () {
-                            if (this.point.value > 0) {
-                                return this.point.value;
-                            }
-                        }
-                    }
-                }
+                // series: {
+                //     dataLabels: {
+                //         formatter: function () {
+                //             if (this.point.value > 0) {
+                //                 return this.point.value;
+                //             }
+                //         }
+                //     }
+                // }
             },
 
             tooltip: {
-                formatter: function () {
-                    return (
-                        "<b>" +
-                        this.series.xAxis.categories[this.point.x] +
-                        "</b> sold <br><b>" +
-                        this.point.value +
-                        "</b> items on <br><b>" +
-                        this.series.yAxis.categories[this.point.y] +
-                        "</b>"
-                    );
-                }
+                // formatter: function () {
+                //     return (
+                //         "<b>" +
+                //         this.series.xAxis.categories[this.point.x] +
+                //         "</b> sold <br><b>" +
+                //         this.point.value +
+                //         "</b> items on <br><b>" +
+                //         this.series.yAxis.categories[this.point.y] +
+                //         "</b>"
+                //     );
+                // }
             },
 
             series: [
                 {
-                    name: "Sales per employee",
-                    borderWidth: 1,
-                    series2,
+                    name: "PRPD",
+                    borderWidth: 0,
+                    data: series2,
                     dataLabels: {
-                        enabled: true,
+                        enabled: false,
                         color: "#000000"
                     }
                 }

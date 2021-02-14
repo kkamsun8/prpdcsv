@@ -38,9 +38,21 @@ function App() {
 
       const prpd = _.unzip(prpdData)
       console.log(prpd)
-      const prpdJSON = JSON.stringify(prpd);
-      console.log(prpdJSON);
-      setPrpdData(prpdJSON);
+      const test = prpd[3];
+      console.log(test[1]);
+      let chartData = [];
+
+      for (let index = 0; index < prpd.length; index++) {
+        const buffer = prpd[index];
+        for (let j = 0; j < prpd[index].length; j++) {
+          chartData.push([j, index, buffer[j]]);
+        }
+      }
+      console.log(chartData);
+
+      // const prpdJSON = JSON.stringify(prpd);
+      // console.log(prpdJSON);
+      setPrpdData(chartData);
     };
   }
 
