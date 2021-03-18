@@ -26,6 +26,10 @@ class High extends Component {
             title: {
                 text: undefined
             },
+            tooltip: {
+                enabled: false,
+                animation: false
+            },
 
             yAxis: {
                 categories: ["None", "Delivery", "Installation", "C&C", "Action"],
@@ -66,19 +70,19 @@ class High extends Component {
                 // }
             },
 
-            tooltip: {
-                // formatter: function () {
-                //     return (
-                //         "<b>" +
-                //         this.series.xAxis.categories[this.point.x] +
-                //         "</b> sold <br><b>" +
-                //         this.point.value +
-                //         "</b> items on <br><b>" +
-                //         this.series.yAxis.categories[this.point.y] +
-                //         "</b>"
-                //     );
-                // }
-            },
+            // tooltip: {
+            //     // formatter: function () {
+            //     //     return (
+            //     //         "<b>" +
+            //     //         this.series.xAxis.categories[this.point.x] +
+            //     //         "</b> sold <br><b>" +
+            //     //         this.point.value +
+            //     //         "</b> items on <br><b>" +
+            //     //         this.series.yAxis.categories[this.point.y] +
+            //     //         "</b>"
+            //     //     );
+            //     // }
+            // },
 
             series: [
                 {
