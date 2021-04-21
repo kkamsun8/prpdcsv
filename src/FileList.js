@@ -29,18 +29,14 @@ const FileList = ({ data, readFile }) => {
         for (const file of data) {
             fileList.push(file);
         }
-        // result = Object.keys(data).map((key) => [data[key]])
-        // console.log(result)
     }
 
-    const classes = useStyles();
-
     return (
-        <div className={classes.root}>
-            <List>
+        <div>
+            <ul className="overflow-auto m-2 h-64">
                 {fileList.map(f =>
                     <File file={f} readFile={readFile} />)}
-            </List>
+            </ul>
         </div >
     )
 }

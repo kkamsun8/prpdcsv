@@ -25,17 +25,14 @@ const File = ({ file, readFile }) => {
 
     return (
         <>
-            <ListItem
+            <li
                 button
                 onClick={() => readFile(fileData)}
-                className={classes.root}
+                className="text-xs hover:bg-blue-100 cursor-pointer"
             >
-                <ListItemText
-                    primary={fileName}
-                    className={classes.text}
-                />
-            </ListItem>
-            <Divider />
+                {fileName}
+            </li>
+            <hr />
         </>
     )
 }

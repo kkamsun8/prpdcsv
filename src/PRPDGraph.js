@@ -84,7 +84,7 @@ const PRPDGraph = ({ data }) => {
 
     return (
         <>
-            <svg ref={svgRef}>
+            <svg className="flex m-4 " ref={svgRef}>
             </svg>
         </>
     )

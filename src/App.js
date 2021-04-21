@@ -5,6 +5,11 @@ import FileList from './FileList';
 import PRPDGraph from './PRPDGraph';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
+import JSZip from 'jszip';
+import saveAs from 'file-saver';
+import './index.css';
+
+
 const useStyles = makeStyles(() => ({
   input: {
     padding: 10,
@@ -81,13 +86,11 @@ function App() {
   }
 
   const readFile = (file) => {
-    console.log(`file=${file}`);
     if (!file) { return }; // file이 없을 경우 return
     const fileSlice = file.slice(8); // 파일의 Header 8Byte 이후
     const reader = new FileReader(); // FileReader 객체 생성
     reader.readAsArrayBuffer(fileSlice); // 파일 Read
     reader.onload = () => {  // 파일을 다읽게 되면 콜백
-
       const buffer = reader.result;
       const view = new DataView(buffer);
       const prpdDataRow = [];
@@ -99,22 +102,55 @@ function App() {
     };
   }
 
+  const SaveFile = async () => {
+    const zip = new JSZip();
+
+    for (const file of fileList) {
+
+      const fileSlice = file.slice(8); // 파일의 Header 8Byte 이후
+      const reader = new FileReader(); // FileReader 객체 생성
+      reader.readAsArrayBuffer(fileSlice); // 파일 Read
+      reader.onload = async () => {  // 파일을 다읽게 되면 콜백
+        const buffer = reader.result;
+        const view = new DataView(buffer);
+        const prpdDataRow = [];
+        for (let index = 0; index < 65536; index++) {
+          const data = view.getUint16((index * 2), false);
+          prpdDataRow.push(data);
+        }
+        const prpdData2D = [];
+        while (prpdDataRow.length) prpdData2D.push(prpdDataRow.splice(0, 256));
+        console.log(file.name);
+        console.log(prpdData2D.map((d) => d.join()).join('\n'));
+        const prpdCsv = prpdData2D.map((d) => d.join()).join('\n');
+        await zip.file(file.name, prpdCsv);
+      }
+    }
+    zip.generateAsync({ type: "blob" })
+      .then((blob) => { saveAs(blob, "test.zip"); })
+
+
+    // zip.file("Hello.txt", "Hello World\n");
+    // zip.folder("images");
+    // zip.generateAsync({ type: "blob" })
+    //   .then((blob) => { saveAs(blob, "test.zip"); })
+  }
+
   const classes = useStyles();
   return (
     <div className="App">
+      <h1 className="bg-blue-500 text-white m-1 p-1">PRPD to CSV</h1>
       <div className={classes.input}>
-        <Button variant="contained" component="label" color="primary">
+        <label className="bg-blue-500 m-1 p-1 hover:bg-blue-700 text-white py-1 px-4 rounded">
           Upload Folder
           <input type="file" onChange={handleChangeFolder} id="folder-upload" name="folder[]" webkitdirectory="" directory="" hidden />
-        </Button>
+        </label>
+        <button className="bg-blue-500 m-1 p-1 hover:bg-blue-700 text-white py-1 px-4 rounded" onClick={SaveFile}>Download</button>
       </div>
       <div className={classes.wrapper}>
         <FileList data={fileList} readFile={readFile}></FileList>
         <PRPDGraph data={data} />
       </div>
-      {/* <LargeHigh data={csvData} /> */}
-
-
     </div>
   );
 }
