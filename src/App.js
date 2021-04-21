@@ -9,6 +9,7 @@ import JSZip from 'jszip';
 import saveAs from 'file-saver';
 import './index.css';
 
+const zip = new JSZip();
 
 const useStyles = makeStyles(() => ({
   input: {
@@ -102,11 +103,33 @@ function App() {
     };
   }
 
+  const makePRPDZip = function (zip, fileList) {
+    return new Promise(function (resolve, reject) {
+      for (const file of fileList) {
+        const fileSlice = file.slice(8); // 파일의 Header 8Byte 이후
+        const reader = new FileReader(); // FileReader 객체 생성
+        reader.readAsArrayBuffer(fileSlice); // 파일 Read
+        reader.onload = async () => {  // 파일을 다읽게 되면 콜백
+          const buffer = reader.result;
+          const view = new DataView(buffer);
+          const prpdDataRow = [];
+          for (let index = 0; index < 65536; index++) {
+            const data = view.getUint16((index * 2), false);
+            prpdDataRow.push(data);
+          }
+          const prpdData2D = [];
+          while (prpdDataRow.length) prpdData2D.push(prpdDataRow.splice(0, 256));
+          const prpdCsv = prpdData2D.map((d) => d.join()).join('\n');
+          await zip.file(file.name, prpdCsv);
+        }
+      }
+    })
+  }
+
   const SaveFile = async () => {
-    const zip = new JSZip();
-
-    for (const file of fileList) {
-
+    console.log(fileList.length);
+    for (let index = 0; index < fileList.length; index++) {
+      const file = fileList[index];
       const fileSlice = file.slice(8); // 파일의 Header 8Byte 이후
       const reader = new FileReader(); // FileReader 객체 생성
       reader.readAsArrayBuffer(fileSlice); // 파일 Read
@@ -120,14 +143,15 @@ function App() {
         }
         const prpdData2D = [];
         while (prpdDataRow.length) prpdData2D.push(prpdDataRow.splice(0, 256));
-        console.log(file.name);
-        console.log(prpdData2D.map((d) => d.join()).join('\n'));
-        const prpdCsv = prpdData2D.map((d) => d.join()).join('\n');
-        await zip.file(file.name, prpdCsv);
+        const prpdData = _.unzip(prpdData2D)
+        const prpdCsv = prpdData.map((d) => d.join()).join('\n');
+        await zip.file(file.name.replace('.dat2', '.csv'), prpdCsv);
+        if (index === (fileList.length - 1))
+          zip.generateAsync({ type: "blob", compression: "DEFLATE" })
+            .then((blob) => { saveAs(blob, "test.zip"); })
       }
     }
-    zip.generateAsync({ type: "blob" })
-      .then((blob) => { saveAs(blob, "test.zip"); })
+
 
 
     // zip.file("Hello.txt", "Hello World\n");
@@ -137,6 +161,7 @@ function App() {
   }
 
   const classes = useStyles();
+
   return (
     <div className="App">
       <h1 className="bg-blue-500 text-white m-1 p-1">PRPD to CSV</h1>
