@@ -164,17 +164,21 @@ function App() {
 
   return (
     <div className="App">
-      <h1 className="bg-blue-500 text-white m-1 p-1">PRPD to CSV</h1>
-      <div className={classes.input}>
-        <label className="bg-blue-500 m-1 p-1 hover:bg-blue-700 text-white py-1 px-4 rounded">
-          Upload Folder
-          <input type="file" onChange={handleChangeFolder} id="folder-upload" name="folder[]" webkitdirectory="" directory="" hidden />
-        </label>
-        <button className="bg-blue-500 m-1 p-1 hover:bg-blue-700 text-white py-1 px-4 rounded" onClick={SaveFile}>Download</button>
+      <div className="bg-blue-500">
+        <h1 className="bg-blue-500 text-white font-bold m-1 p-1">PRPD to CSV</h1>
       </div>
-      <div className={classes.wrapper}>
-        <FileList data={fileList} readFile={readFile}></FileList>
-        <PRPDGraph data={data} />
+      <div className="flex justify-center">
+        <div>
+          <label className="bg-blue-500 hover:bg-blue-700 text-white p-2 m-1 rounded">
+            Upload Folder
+          <input type="file" onChange={handleChangeFolder} id="folder-upload" name="folder[]" webkitdirectory="" directory="" hidden />
+          </label>
+          <button className="bg-blue-500 m-1 hover:bg-blue-700 text-white py-1 px-4 rounded" onClick={SaveFile}>Download</button>
+        </div>
+        <div className="flex justify-center">
+          <FileList data={fileList} readFile={readFile}></FileList>
+          <PRPDGraph data={data} />
+        </div>
       </div>
     </div>
   );
